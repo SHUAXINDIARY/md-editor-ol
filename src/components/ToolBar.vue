@@ -24,30 +24,30 @@
   </div>
 </template>
 <script>
-import { ref, watchEffect } from 'vue'
-import { icon } from '../until/constant.js'
+import { ref, watchEffect } from "vue";
+import { icon } from "../until/constant.js";
 export default {
-  name: 'ToolBar',
+  name: "ToolBar",
   props: {
-    text: String,
+    selected: String,
   },
-  setup(props) {
+  setup(props, context) {
     const lowerCase = () => {
-      // console.log('小写转换', text.value)
-      console.log(props.text)
-    }
+      console.log(props.selected.toLowerCase())
+      context.emit("resetText", props.selected.toLowerCase());
+    };
     return {
       fun(funName) {
         switch (funName) {
-          case 'lowerCase':
-            lowerCase()
-            break
+          case "lowerCase":
+            lowerCase();
+            break;
           default:
-            break
+            break;
         }
       },
       icon,
-    }
+    };
   },
-}
+};
 </script>
