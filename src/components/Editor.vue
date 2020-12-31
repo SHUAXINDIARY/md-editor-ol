@@ -2,7 +2,6 @@
 .main {
   width: 100vw;
   height: 100vh;
-
   .bottom {
     display: flex;
     height: 95%;
@@ -30,8 +29,8 @@
     <ToolBar :selected="textState.selected" @resetText="setTextState" />
     <div class="bottom">
       <textarea
-        @keydown="preventTab"
-        @click="getSelected"
+        @keydown="getSelectedByKey"
+        @click="getSelectedByMouse"
         class="left"
         v-model="textState.text"
       ></textarea>
@@ -74,14 +73,37 @@ export default {
         0,
         textState.start
       )}${recive}${origin.substr(textState.end)}`;
+      // 重置
+      textState.start = 0;
+      textState.end = 0;
+      textState.selected = "";
     };
     // 获取选中的字符串 并记录光标位置
-    const getSelected = (e) => {
+    const getSelectedByMouse = (e) => {
       let origin = textState.text;
       textState.start = e.target.selectionStart;
       textState.end = e.target.selectionEnd;
-      console.log(textState);
       textState.selected = window.getSelection().toString();
+    };
+    // 判断键盘选择
+    const getSelectedByKey = (e) => {
+      textState.start = e.target.selectionStart;
+      textState.end = e.target.selectionEnd;
+      let code = e.keyCode;
+      // 17:ctrl
+      console.log(`code=${code}`);
+      switch (code) {
+        // tab键
+        case 9:
+          preventTab(e);
+          break;
+        // 回车
+        case 13:
+          setTextState("\n");
+          break;
+        default:
+          break;
+      }
     };
     // watchvue3写法
     watch(
@@ -95,9 +117,9 @@ export default {
     return {
       textState,
       renderHtml,
-      preventTab,
-      getSelected,
       setTextState,
+      getSelectedByKey,
+      getSelectedByMouse,
     };
   },
 };
