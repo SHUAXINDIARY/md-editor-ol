@@ -87,11 +87,11 @@
 </template>
 <script>
 import { reactive, ref, watch, watchEffect } from "vue";
-import { editorEvent } from "../until/constant.js";
+// import { editorEvent } from "../until/constant.js";
 import { icon } from "../until/constant.js";
 export default {
   name: "ToolBar",
-  emits: [editorEvent.RESETTEXT],
+  emits: ["resetText"],
   props: {
     // 接受选中的值
     selected: {
@@ -109,62 +109,63 @@ export default {
     // 添加连接面板
     const add = () => {
       let result = `[${link.title}](${link.linking})`;
-      context.emit(editorEvent.RESETTEXT, result);
+      context.emit("resetText", result);
       link.panel = false;
     };
     // 功能键操作
     let feature = {
       lowerCase: () => {
         let result = props.selected.toLowerCase();
-        context.emit(editorEvent.RESETTEXT, result);
+        context.emit("resetText", result);
       },
       upperCase: () => {
         let result = props.selected.toUpperCase();
-        context.emit(editorEvent.RESETTEXT, result);
+        context.emit("resetText", result);
       },
       bold: () => {
         let result = `**${props.selected}**`;
-        context.emit(editorEvent.RESETTEXT, result);
+        context.emit("resetText", result);
       },
       markup: () => {
         let result = `> ${props.selected}`;
-        context.emit(editorEvent.RESETTEXT, result);
+        context.emit("resetText", result);
       },
       italic: () => {
         let result = `*${props.selected}*`;
-        context.emit(editorEvent.RESETTEXT, result);
+        context.emit("resetText", result);
       },
       headOne: () => {
         let result = `# ${props.selected}`;
-        context.emit(editorEvent.RESETTEXT, result);
+        context.emit("resetText", result);
       },
       headTwo: () => {
         let result = `## ${props.selected}`;
-        context.emit(editorEvent.RESETTEXT, result);
+        context.emit("resetText", result);
       },
       headThree: () => {
         let result = `### ${props.selected}`;
-        context.emit(editorEvent.RESETTEXT, result);
+        context.emit("resetText", result);
       },
       headFour: () => {
         let result = `#### ${props.selected}`;
-        context.emit(editorEvent.RESETTEXT, result);
+        context.emit("resetText", result);
       },
       headFive: () => {
         let result = `##### ${props.selected}`;
-        context.emit(editorEvent.RESETTEXT, result);
+        context.emit("resetText", result);
       },
       headSix: () => {
         let result = `###### ${props.selected}`;
-        context.emit(editorEvent.RESETTEXT, result);
+        context.emit("resetText", result);
       },
       link: () => {
         link.panel = true;
+        link.title=props.selected
         console.log("链接");
       },
       strikethrough: () => {
         let result = `~~${props.selected}~~`;
-        context.emit(editorEvent.RESETTEXT, result);
+        context.emit("resetText", result);
       },
       list: () => {
         let textArr = props.selected.split("\n");
@@ -174,7 +175,7 @@ export default {
             return item.length ? `- ${item}` : item;
           })
           .join("\n");
-        context.emit(editorEvent.RESETTEXT, result);
+        context.emit("resetText", result);
       },
       orderList: () => {
         let textArr = props.selected.split("\n");
@@ -185,7 +186,7 @@ export default {
             return item.length ? `${index++}. ${item}` : item;
           })
           .join("\n");
-        context.emit(editorEvent.RESETTEXT, result);
+        context.emit("resetText", result);
       },
     };
     watch(
@@ -193,7 +194,7 @@ export default {
         return link.panel;
       },
       (val) => {
-        if (!val) return false;
+        if (val) return false;
         link.title = "";
         link.linking = "";
       }

@@ -69,10 +69,11 @@ export default {
     // 接收处理完的字符串 重新替换字符串
     const setTextState = (recive) => {
       let origin = textState.text;
-      textState.text = `${origin.substring(
-        0,
-        textState.start
-      )}${recive}${origin.substr(textState.end)}`;
+      let start = textState.start,
+        end = textState.end;
+      textState.text = `${origin.substring(0, start)}${recive}${origin.substr(
+        start === end ? start : end
+      )}`;
       // 重置
       textState.start = 0;
       textState.end = 0;
@@ -80,18 +81,19 @@ export default {
     };
     // 获取选中的字符串 并记录光标位置
     const getSelectedByMouse = (e) => {
-      let origin = textState.text;
+      // let origin = textState.text;
       textState.start = e.target.selectionStart;
       textState.end = e.target.selectionEnd;
       textState.selected = window.getSelection().toString();
     };
     // 判断键盘选择
     const getSelectedByKey = (e) => {
-      textState.start = e.target.selectionStart;
-      textState.end = e.target.selectionEnd;
+      textState.start = e.target.selectionStart - 1;
+      textState.end = e.target.selectionEnd - 1;
+      textState.selected = window.getSelection().toString();
       let code = e.keyCode;
       // 17:ctrl
-      console.log(`code=${code}`);
+      // console.log(`code=${code}`);
       switch (code) {
         // tab键
         case 9:
@@ -99,7 +101,7 @@ export default {
           break;
         // 回车
         case 13:
-          setTextState("\n");
+          // setTextState("\n");
           break;
         default:
           break;
