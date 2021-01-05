@@ -86,7 +86,7 @@
   </div>
 </template>
 <script>
-import { reactive, ref, watchEffect } from "vue";
+import { reactive, ref, watch, watchEffect } from "vue";
 import { editorEvent } from "../until/constant.js";
 import { icon } from "../until/constant.js";
 export default {
@@ -100,16 +100,19 @@ export default {
     },
   },
   setup(props, context) {
+    // 添加连接面板
     const link = reactive({
       panel: false,
       title: "",
       linking: "",
     });
+    // 添加连接面板
     const add = () => {
       let result = `[${link.title}](${link.linking})`;
-      console.log(result);
       context.emit(editorEvent.RESETTEXT, result);
+      link.panel = false;
     };
+    // 功能键操作
     let feature = {
       lowerCase: () => {
         let result = props.selected.toLowerCase();
@@ -159,12 +162,47 @@ export default {
         link.panel = true;
         console.log("链接");
       },
+      strikethrough: () => {
+        let result = `~~${props.selected}~~`;
+        context.emit(editorEvent.RESETTEXT, result);
+      },
+      list: () => {
+        let textArr = props.selected.split("\n");
+        let result = textArr
+          .map((item) => {
+            // 判断item是否是换行符
+            return item.length ? `- ${item}` : item;
+          })
+          .join("\n");
+        context.emit(editorEvent.RESETTEXT, result);
+      },
+      orderList: () => {
+        let textArr = props.selected.split("\n");
+        let index = 1;
+        let result = textArr
+          .map((item) => {
+            // 判断item是否是换行符
+            return item.length ? `${index++}. ${item}` : item;
+          })
+          .join("\n");
+        context.emit(editorEvent.RESETTEXT, result);
+      },
     };
+    watch(
+      () => {
+        return link.panel;
+      },
+      (val) => {
+        if (!val) return false;
+        link.title = "";
+        link.linking = "";
+      }
+    );
     return {
+      add,
+      link,
       icon,
       feature,
-      link,
-      add,
     };
   },
 };
