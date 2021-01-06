@@ -132,8 +132,7 @@ export default {
           // 复制所在行
           copyText(textState.text.substring(cutStart, cutEnd + 1))
           // console.log(`start=${cutStart},end=${cutEnd}`)
-          // 需要判断之后是否还有换行
-          // 去除改行
+          // 需要判断之后是否还有换行 去除该行
           textState.text = `${text.substring(0, cutStart)}${
             cutEnd + 1 === text.length
               ? ''
