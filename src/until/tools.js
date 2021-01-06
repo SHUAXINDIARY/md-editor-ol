@@ -62,3 +62,32 @@ export function copyText (text) {
     console.log('复制成功');
   }
 }
+// 获取光标所在行内容
+// position：当前光标位置 text：全部文本
+export function getRowContent (position, text) {
+  if (typeof position !== 'number') {
+    throw new Error("position must be a number")
+  }
+  if (typeof text !== 'string') {
+    throw new Error("text must be a string")
+  }
+  let start = -1,
+    end = -1
+  // 找到光标所在行首 通过换行符判断
+  for (let i = position; i >= 0; i--) {
+    if (text[i] === '\n' || i === 0) {
+      start = i
+      break
+    }
+  }
+  // 找到光标所在行尾
+  for (let i = position; i < text.length; i++) {
+    if (text[i] === '\n' || i === text.length - 1) {
+      end = i
+      break
+    }
+  }
+  return {
+    start, end
+  }
+}
