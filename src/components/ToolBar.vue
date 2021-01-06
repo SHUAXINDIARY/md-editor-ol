@@ -87,19 +87,24 @@
 </template>
 <script>
 import { icon } from "../until/constant.js";
-import { saveFile } from "../until/tools.js";
+import { saveFile, saveImg } from "../until/tools.js";
 import { nextTick, reactive, ref, watch, watchEffect } from "vue";
 export default {
   name: "ToolBar",
-  emits: ["resetText", "getAllText"],
+  emits: ["resetText", "getAllText", "getMdDom"],
   props: {
     // 接受选中的值
     selected: {
       type: String,
       required: true,
     },
+    // 接受渲染后的dom
+    targetDom: {
+      type: Object,
+    },
   },
   setup(props, context) {
+    const demoDom = ref(null);
     // 添加连接面板
     const link = reactive({
       panel: false,
@@ -190,11 +195,15 @@ export default {
       },
       // 导出md
       exportMD: () => {
-        console.log("导出");
         context.emit("getAllText");
         nextTick(() => {
           saveFile(props.selected, "md");
         });
+      },
+      // 导出图片
+      exportImg: () => {
+        console.log(props.targetDom)
+        saveImg(props.targetDom);
       },
     };
     watch(

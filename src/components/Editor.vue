@@ -29,7 +29,8 @@
     <ToolBar
       :selected="textState.selected"
       @resetText="setTextState"
-      @getAllText="getTextState"
+      @getAllText="textState.selected = textState.text"
+      :targetDom="mdDom"
     />
     <div class="bottom">
       <textarea
@@ -37,8 +38,12 @@
         @click="getSelectedByMouse"
         class="left"
         v-model="textState.text"
-      ></textarea>
-      <div class="right markdown-body" v-html="textState.template"></div>
+      />
+      <div
+        ref="mdDom"
+        class="right markdown-body"
+        v-html="textState.template"
+      />
     </div>
   </div>
 </template>
@@ -47,13 +52,14 @@ import "marked";
 import ToolBar from "./ToolBar.vue";
 import DOMPurify from "dompurify";
 import { preventTab, copyText, getRowContent } from "../until/tools.js";
-import { reactive, render, watch } from "vue";
+import { reactive, ref, render, watch } from "vue";
 export default {
   name: "Editor",
   components: {
     ToolBar,
   },
   setup() {
+    const mdDom = ref(null);
     const textState = reactive({
       // 光标起始位置
       start: 0,
@@ -71,9 +77,6 @@ export default {
       // 做转转义：防止XSS
       textState.template = DOMPurify.sanitize(marked(val));
       // console.log(marked(val))
-    };
-    const getTextState = () => {
-      textState.selected = textState.text;
     };
     // 接收处理完的字符串 重新替换字符串
     const setTextState = (recive) => {
@@ -164,10 +167,10 @@ export default {
       }
     );
     return {
+      mdDom,
       textState,
       renderHtml,
       setTextState,
-      getTextState,
       getSelectedByKey,
       getSelectedByMouse,
     };

@@ -1,3 +1,4 @@
+import html2canvas from 'html2canvas'
 // 阻止textarea失效问题
 export function preventTab(e) {
   let dom = e.target;
@@ -107,4 +108,23 @@ export function saveFile(fileStr, fileType) {
   document.body.appendChild(A);
   A.click();
   document.body.removeChild(A);
+}
+
+// 保存图片
+export async function saveImg(dom) {
+  console.log(dom)
+  // const canvasImg = await html2canvas(dom)
+  const canvasImg = await html2canvas(dom,{
+    backgroundColor:"red"
+  })
+  document.body.append(canvasImg)
+  // var MIME_TYPE = "image/png";
+  // var imgURL = canvasImg.toDataURL(MIME_TYPE);
+  // var dlLink = document.createElement('a');
+  // dlLink.download = `${+new Date()}.png`;
+  // dlLink.href = imgURL;
+  // dlLink.dataset.downloadurl = [MIME_TYPE, dlLink.download, dlLink.href].join(':');
+  // document.body.appendChild(dlLink);
+  // dlLink.click();
+  // document.body.removeChild(dlLink);
 }
