@@ -56,11 +56,13 @@ export function copyText (text) {
   const input = document.createElement('input');
   document.body.appendChild(input);
   input.setAttribute('value', text);
+  input.setAttribute('id', 'copy');
   input.select();
   if (document.execCommand('copy')) {
     document.execCommand('copy');
     console.log('复制成功');
   }
+  document.body.removeChild(document.querySelector('#copy'))
 }
 // 获取光标所在行内容
 // position：当前光标位置 text：全部文本
