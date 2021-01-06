@@ -42,7 +42,7 @@
 import 'marked'
 import ToolBar from './ToolBar.vue'
 import DOMPurify from 'dompurify'
-import { preventTab } from '../until/tools.js'
+import { preventTab, copyText } from '../until/tools.js'
 import { reactive, render, watch } from 'vue'
 export default {
   name: 'Editor',
@@ -61,18 +61,18 @@ export default {
       selected: '',
       //   渲染后的md内容
       template: '',
-      // 缓存按键
-      keyCache: [],
     })
     const renderHtml = (val) => {
+      // console.log(val)
       // 做转转义：防止XSS
       textState.template = DOMPurify.sanitize(marked(val))
+      // console.log(marked(val))
     }
     // 接收处理完的字符串 重新替换字符串
     const setTextState = (recive) => {
       let origin = textState.text
-      let start = textState.start,
-        end = textState.end
+      let start = textState.start
+      let end = textState.end
       textState.text = `${origin.substring(0, start)}${recive}${origin.substr(
         start === end ? start : end
       )}`
@@ -83,7 +83,6 @@ export default {
     }
     // 获取选中的字符串 并记录光标位置
     const getSelectedByMouse = (e) => {
-      // let origin = textState.text;
       textState.start = e.target.selectionStart
       textState.end = e.target.selectionEnd
       textState.selected = window.getSelection().toString()
@@ -93,27 +92,56 @@ export default {
       textState.start = e.target.selectionStart - 1
       textState.end = e.target.selectionEnd - 1
       textState.selected = window.getSelection().toString()
+      // code:number
       let code = e.keyCode
-      // 17:ctrl
-      // 67:c
-      // 90:z
-      // 65:a
-      // 88:x
-      console.log(`code=${code}`)
+      // ctrl:boolean 当前按下的是否是ctrl健
+      let ctrl = e.ctrlKey
       switch (code) {
+        // 撤销 ctrl+z
+        case 90:
+          if (!ctrl) return
+          console.log('撤销')
+          break
+        // 全选 ctrl+a
+        case 65:
+          if (!ctrl) return
+          console.log('全选')
+          textState.selected = textState.text
+          // 手动重置光标位置
+          textState.start = 0
+          textState.end = textState.text.length
+          break
+        // 复制 ctrl+c
+        case 67:
+          if (!ctrl) return
+          let start = -1,
+            end = -1
+          // 找到光标所在行首 通过换行符判断
+          for (let i = textState.end; i >= 0; i--) {
+            if (textState.text[i] === '\n' || i === 0) {
+              start = i
+              break
+            }
+          }
+          // 找到光标所在行尾
+          for (let i = textState.end; i < textState.text.length; i++) {
+            if (textState.text[i] === '\n' || i === textState.text.length - 1) {
+              end = i
+              break
+            }
+          }
+          console.log(`复制内容：${textState.text.substring(start, end + 1)}`)
+          copyText(textState.text.substring(start, end + 1))
+          break
         // tab键
         case 9:
           preventTab(e)
-          break
-        // 回车
-        case 13:
-          // setTextState("\n");
           break
         default:
           break
       }
     }
-    // watchvue3写法
+    // watch vue3写法
     watch(
       () => {
         return textState.text

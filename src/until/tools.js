@@ -51,3 +51,14 @@ export function throttle (fn, threshold, scope) {
     }
   };
 }
+// 复制文本
+export function copyText (text) {
+  const input = document.createElement('input');
+  document.body.appendChild(input);
+  input.setAttribute('value', text);
+  input.select();
+  if (document.execCommand('copy')) {
+    document.execCommand('copy');
+    console.log('复制成功');
+  }
+}
