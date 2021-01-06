@@ -42,7 +42,7 @@
 import 'marked'
 import ToolBar from './ToolBar.vue'
 import DOMPurify from 'dompurify'
-import { preventTab, copyText } from '../until/tools.js'
+import { preventTab, copyText, getRowContent } from '../until/tools.js'
 import { reactive, render, watch } from 'vue'
 export default {
   name: 'Editor',
@@ -111,27 +111,34 @@ export default {
           textState.start = 0
           textState.end = textState.text.length
           break
-        // 复制 ctrl+c
+        // 复制行 ctrl+c
         case 67:
           if (!ctrl) return
-          let start = -1,
-            end = -1
-          // 找到光标所在行首 通过换行符判断
-          for (let i = textState.end; i >= 0; i--) {
-            if (textState.text[i] === '\n' || i === 0) {
-              start = i
-              break
-            }
-          }
-          // 找到光标所在行尾
-          for (let i = textState.end; i < textState.text.length; i++) {
-            if (textState.text[i] === '\n' || i === textState.text.length - 1) {
-              end = i
-              break
-            }
-          }
-          console.log(`复制内容：${textState.text.substring(start, end + 1)}`)
-          copyText(textState.text.substring(start, end + 1))
+          const { start: copyStart, end: copyEnd } = getRowContent(
+            textState.end,
+            textState.text
+          )
+          copyText(textState.text.substring(copyStart, copyEnd + 1))
+          break
+        // 剪切行 ctrl+x
+        case 88:
+          if (!ctrl) return
+          // 获取所在行
+          const { start: cutStart, end: cutEnd } = getRowContent(
+            textState.end,
+            textState.text
+          )
+          const text = textState.text
+          // 复制所在行
+          copyText(textState.text.substring(cutStart, cutEnd + 1))
+          // console.log(`start=${cutStart},end=${cutEnd}`)
+          // 需要判断之后是否还有换行
+          // 去除改行
+          textState.text = `${text.substring(0, cutStart)}${
+            cutEnd + 1 === text.length
+              ? ''
+              : text.substring(cutEnd, text.length)
+          }`
           break
         // tab键
         case 9:
