@@ -39,13 +39,13 @@
   </div>
 </template>
 <script>
-import "marked";
-import ToolBar from "./ToolBar.vue";
-import DOMPurify from "dompurify";
-import { preventTab } from "../until/tools.js";
-import { reactive, render, watch } from "vue";
+import 'marked'
+import ToolBar from './ToolBar.vue'
+import DOMPurify from 'dompurify'
+import { preventTab } from '../until/tools.js'
+import { reactive, render, watch } from 'vue'
 export default {
-  name: "Editor",
+  name: 'Editor',
   components: {
     ToolBar,
   },
@@ -56,73 +56,79 @@ export default {
       // 光标结束位置
       end: 0,
       // 编辑器
-      text: "",
+      text: '',
       // 选中内容
-      selected: "",
+      selected: '',
       //   渲染后的md内容
-      template: "",
-    });
+      template: '',
+      // 缓存按键
+      keyCache: [],
+    })
     const renderHtml = (val) => {
-      // 防止XSS
-      textState.template = DOMPurify.sanitize(marked(val));
-    };
+      // 做转转义：防止XSS
+      textState.template = DOMPurify.sanitize(marked(val))
+    }
     // 接收处理完的字符串 重新替换字符串
     const setTextState = (recive) => {
-      let origin = textState.text;
+      let origin = textState.text
       let start = textState.start,
-        end = textState.end;
+        end = textState.end
       textState.text = `${origin.substring(0, start)}${recive}${origin.substr(
         start === end ? start : end
-      )}`;
+      )}`
       // 重置
-      textState.start = 0;
-      textState.end = 0;
-      textState.selected = "";
-    };
+      textState.start = 0
+      textState.end = 0
+      textState.selected = ''
+    }
     // 获取选中的字符串 并记录光标位置
     const getSelectedByMouse = (e) => {
       // let origin = textState.text;
-      textState.start = e.target.selectionStart;
-      textState.end = e.target.selectionEnd;
-      textState.selected = window.getSelection().toString();
-    };
+      textState.start = e.target.selectionStart
+      textState.end = e.target.selectionEnd
+      textState.selected = window.getSelection().toString()
+    }
     // 判断键盘选择
     const getSelectedByKey = (e) => {
-      textState.start = e.target.selectionStart - 1;
-      textState.end = e.target.selectionEnd - 1;
-      textState.selected = window.getSelection().toString();
-      let code = e.keyCode;
+      textState.start = e.target.selectionStart - 1
+      textState.end = e.target.selectionEnd - 1
+      textState.selected = window.getSelection().toString()
+      let code = e.keyCode
       // 17:ctrl
-      // console.log(`code=${code}`);
+      // 67:c
+      // 90:z
+      // 65:a
+      // 88:x
+      console.log(`code=${code}`)
       switch (code) {
         // tab键
         case 9:
-          preventTab(e);
-          break;
+          preventTab(e)
+          break
         // 回车
         case 13:
           // setTextState("\n");
-          break;
+          break
         default:
-          break;
+          break
       }
-    };
+    }
     // watchvue3写法
     watch(
       () => {
-        return textState.text;
+        return textState.text
       },
       (val, oldVal) => {
-        renderHtml(val);
+        renderHtml(val)
       }
-    );
+    )
     return {
       textState,
       renderHtml,
       setTextState,
       getSelectedByKey,
       getSelectedByMouse,
-    };
+    }
   },
-};
+}
 </script>
