@@ -88,8 +88,19 @@ export const icon = [
     FUN: 'strikethrough',
     title: "删除线"
   },
+  {
+    iconClass: "icon-tupian",
+    FUN: 'exportImg',
+    title: "导出为图片"
+  },
+  {
+    iconClass: "icon-MD",
+    FUN: 'exportMD',
+    title: "导出为MD"
+  },
+  {
+    iconClass: "icon-pdf",
+    FUN: 'exportPDF',
+    title: "导出为PDF"
+  }
 ]
-
-export const editorEvent = {
-  RESETTEXT: "resetText"
-}

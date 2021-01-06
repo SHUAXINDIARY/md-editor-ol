@@ -86,12 +86,12 @@
   </div>
 </template>
 <script>
-import { reactive, ref, watch, watchEffect } from "vue";
-// import { editorEvent } from "../until/constant.js";
 import { icon } from "../until/constant.js";
+import { saveFile } from "../until/tools.js";
+import { nextTick, reactive, ref, watch, watchEffect } from "vue";
 export default {
   name: "ToolBar",
-  emits: ["resetText"],
+  emits: ["resetText", "getAllText"],
   props: {
     // 接受选中的值
     selected: {
@@ -160,7 +160,7 @@ export default {
       },
       link: () => {
         link.panel = true;
-        link.title=props.selected
+        link.title = props.selected;
         console.log("链接");
       },
       strikethrough: () => {
@@ -187,6 +187,14 @@ export default {
           })
           .join("\n");
         context.emit("resetText", result);
+      },
+      // 导出md
+      exportMD: () => {
+        console.log("导出");
+        context.emit("getAllText");
+        nextTick(() => {
+          saveFile(props.selected, "md");
+        });
       },
     };
     watch(
