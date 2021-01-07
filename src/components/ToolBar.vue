@@ -86,12 +86,12 @@
   </div>
 </template>
 <script>
-import { icon } from "../until/constant.js";
-import { saveFile, saveImg } from "../until/tools.js";
-import { nextTick, reactive, ref, watch, watchEffect } from "vue";
+import { icon } from '../until/constant.js'
+import { saveFile, exportImg } from '../until/tools.js'
+import { nextTick, reactive, ref, watch, watchEffect } from 'vue'
 export default {
-  name: "ToolBar",
-  emits: ["resetText", "getAllText", "getMdDom"],
+  name: 'ToolBar',
+  emits: ['resetText', 'getAllText', 'getMdDom'],
   props: {
     // 接受选中的值
     selected: {
@@ -104,124 +104,123 @@ export default {
     },
   },
   setup(props, context) {
-    const demoDom = ref(null);
     // 添加连接面板
     const link = reactive({
       panel: false,
-      title: "",
-      linking: "",
-    });
+      title: '',
+      linking: '',
+    })
     // 添加连接面板
     const add = () => {
-      let result = `[${link.title}](${link.linking})`;
-      context.emit("resetText", result);
-      link.panel = false;
-    };
+      let result = `[${link.title}](${link.linking})`
+      context.emit('resetText', result)
+      link.panel = false
+    }
+    const demoRef = ref(null)
     // 功能键操作
     let feature = {
       lowerCase: () => {
-        let result = props.selected.toLowerCase();
-        context.emit("resetText", result);
+        let result = props.selected.toLowerCase()
+        context.emit('resetText', result)
       },
       upperCase: () => {
-        let result = props.selected.toUpperCase();
-        context.emit("resetText", result);
+        let result = props.selected.toUpperCase()
+        context.emit('resetText', result)
       },
       bold: () => {
-        let result = `**${props.selected}**`;
-        context.emit("resetText", result);
+        let result = `**${props.selected}**`
+        context.emit('resetText', result)
       },
       markup: () => {
-        let result = `> ${props.selected}`;
-        context.emit("resetText", result);
+        let result = `> ${props.selected}`
+        context.emit('resetText', result)
       },
       italic: () => {
-        let result = `*${props.selected}*`;
-        context.emit("resetText", result);
+        let result = `*${props.selected}*`
+        context.emit('resetText', result)
       },
       headOne: () => {
-        let result = `# ${props.selected}`;
-        context.emit("resetText", result);
+        let result = `# ${props.selected}`
+        context.emit('resetText', result)
       },
       headTwo: () => {
-        let result = `## ${props.selected}`;
-        context.emit("resetText", result);
+        let result = `## ${props.selected}`
+        context.emit('resetText', result)
       },
       headThree: () => {
-        let result = `### ${props.selected}`;
-        context.emit("resetText", result);
+        let result = `### ${props.selected}`
+        context.emit('resetText', result)
       },
       headFour: () => {
-        let result = `#### ${props.selected}`;
-        context.emit("resetText", result);
+        let result = `#### ${props.selected}`
+        context.emit('resetText', result)
       },
       headFive: () => {
-        let result = `##### ${props.selected}`;
-        context.emit("resetText", result);
+        let result = `##### ${props.selected}`
+        context.emit('resetText', result)
       },
       headSix: () => {
-        let result = `###### ${props.selected}`;
-        context.emit("resetText", result);
+        let result = `###### ${props.selected}`
+        context.emit('resetText', result)
       },
       link: () => {
-        link.panel = true;
-        link.title = props.selected;
-        console.log("链接");
+        link.panel = true
+        link.title = props.selected
+        console.log('链接')
       },
       strikethrough: () => {
-        let result = `~~${props.selected}~~`;
-        context.emit("resetText", result);
+        let result = `~~${props.selected}~~`
+        context.emit('resetText', result)
       },
       list: () => {
-        let textArr = props.selected.split("\n");
+        let textArr = props.selected.split('\n')
         let result = textArr
           .map((item) => {
             // 判断item是否是换行符
-            return item.length ? `- ${item}` : item;
+            return item.length ? `- ${item}` : item
           })
-          .join("\n");
-        context.emit("resetText", result);
+          .join('\n')
+        context.emit('resetText', result)
       },
       orderList: () => {
-        let textArr = props.selected.split("\n");
-        let index = 1;
+        let textArr = props.selected.split('\n')
+        let index = 1
         let result = textArr
           .map((item) => {
             // 判断item是否是换行符
-            return item.length ? `${index++}. ${item}` : item;
+            return item.length ? `${index++}. ${item}` : item
           })
-          .join("\n");
-        context.emit("resetText", result);
+          .join('\n')
+        context.emit('resetText', result)
       },
       // 导出md
       exportMD: () => {
-        context.emit("getAllText");
+        context.emit('getAllText')
         nextTick(() => {
-          saveFile(props.selected, "md");
-        });
+          saveFile(props.selected, 'md')
+        })
       },
       // 导出图片
       exportImg: () => {
-        console.log(props.targetDom)
-        saveImg(props.targetDom);
+        exportImg(props.targetDom)
       },
-    };
+    }
     watch(
       () => {
-        return link.panel;
+        return link.panel
       },
       (val) => {
-        if (val) return false;
-        link.title = "";
-        link.linking = "";
+        if (val) return false
+        link.title = ''
+        link.linking = ''
       }
-    );
+    )
     return {
       add,
       link,
       icon,
       feature,
-    };
+    }
   },
-};
+}
 </script>

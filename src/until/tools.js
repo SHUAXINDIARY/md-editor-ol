@@ -1,6 +1,5 @@
-import html2canvas from 'html2canvas'
 // 阻止textarea失效问题
-export function preventTab(e) {
+export function preventTab (e) {
   let dom = e.target;
   if (e.keyCode == 9) {
     e.preventDefault();
@@ -15,7 +14,7 @@ export function preventTab(e) {
   }
 }
 // 防抖
-export function debounce(fn, timeout, scope) {
+export function debounce (fn, timeout, scope) {
   if (typeof fn !== 'function') {
     throw Error('fn must be a function')
   }
@@ -33,7 +32,7 @@ export function debounce(fn, timeout, scope) {
   }
 }
 // 节流
-export function throttle(fn, threshold, scope) {
+export function throttle (fn, threshold, scope) {
   if (typeof fn !== 'function') {
     throw Error('fn must be a function')
   }
@@ -53,7 +52,7 @@ export function throttle(fn, threshold, scope) {
   };
 }
 // 复制文本
-export function copyText(text) {
+export function copyText (text) {
   const input = document.createElement('input');
   document.body.appendChild(input);
   input.setAttribute('value', text);
@@ -67,7 +66,7 @@ export function copyText(text) {
 }
 // 获取光标所在行内容
 // position：当前光标位置 text：全部文本
-export function getRowContent(position, text) {
+export function getRowContent (position, text) {
   if (typeof position !== 'number') {
     throw new Error("position must be a number")
   }
@@ -95,7 +94,7 @@ export function getRowContent(position, text) {
   }
 }
 // 下载文件
-export function saveFile(fileStr, fileType) {
+export function saveFile (fileStr, fileType) {
   // 创建a标签
   var A = document.createElement('a');
   //文件的名称为时间戳加文件名后缀
@@ -110,21 +109,16 @@ export function saveFile(fileStr, fileType) {
   document.body.removeChild(A);
 }
 
-// 保存图片
-export async function saveImg(dom) {
-  console.log(dom)
-  // const canvasImg = await html2canvas(dom)
-  const canvasImg = await html2canvas(dom,{
-    backgroundColor:"red"
-  })
-  document.body.append(canvasImg)
-  // var MIME_TYPE = "image/png";
-  // var imgURL = canvasImg.toDataURL(MIME_TYPE);
-  // var dlLink = document.createElement('a');
-  // dlLink.download = `${+new Date()}.png`;
-  // dlLink.href = imgURL;
-  // dlLink.dataset.downloadurl = [MIME_TYPE, dlLink.download, dlLink.href].join(':');
-  // document.body.appendChild(dlLink);
-  // dlLink.click();
-  // document.body.removeChild(dlLink);
+// 导出图片
+export async function exportImg (dom) {
+  console.log(window)
+  domtoimage.toBlob(dom)
+    .then(function (blob) {
+      console.log(blob)
+      const link = document.createElement('a');
+      link.href = window.URL.createObjectURL(blob);
+      link.download = "img.png";
+      link.click();
+      window.URL.revokeObjectURL(link.href);
+    });
 }

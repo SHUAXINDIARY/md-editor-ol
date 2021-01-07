@@ -7,7 +7,6 @@
   },
   "dependencies": {
     "dompurify": "^2.2.6",
-    "html2canvas": "^1.0.0-rc.7",
     "vue": "^3.0.4"
   },
   "devDependencies": {
